@@ -2,6 +2,7 @@
 import time
 import datetime
 import csv
+import json
 import requests
 
 def get_time_in_microseconds():
@@ -33,3 +34,18 @@ def log(message):
 
         writer.writeheader()
         writer.writerow({'Time': str(datetime.datetime.now()), 'Message': message})
+
+def get_setting(setting_name):
+    '''Gets some information from the settings file'''
+    with open('settings.json') as json_data:
+        data = json.load(json_data)
+        return data[setting_name]
+
+def set_setting(setting_name, setting):
+    '''Writes a setting into the settings file'''
+    with open('settings.json') as json_data:
+        data = json.load(json_data)
+        data[setting_name] = setting
+
+    with open('settings.json', 'w') as json_data:
+        json.dump(data, json_data, indent=2)

@@ -1,0 +1,14 @@
+{
+  "concurrencyRepeat": 100, 
+  "forever": false, 
+  "repeat": 1000, 
+  "providers": {
+    "snafu": {
+      "url": ""
+    }
+  }, 
+  "maxConcurrency": 800, 
+  "maxConcurrencyPerInitiator": 10, 
+  "interval": 600000, 
+  "serviceName": "serverless-mark"
+}
