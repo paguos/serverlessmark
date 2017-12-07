@@ -35,6 +35,12 @@ def log(message):
         writer.writeheader()
         writer.writerow({'Time': str(datetime.datetime.now()), 'Message': message})
 
+def get_settings():
+    '''Returns a list of the names of all the settings'''
+    with open('settings.json') as json_data:
+        data = json.load(json_data)
+        return data.keys()
+
 def get_setting(setting_name):
     '''Gets some information from the settings file'''
     with open('settings.json') as json_data:
@@ -49,3 +55,30 @@ def set_setting(setting_name, setting):
 
     with open('settings.json', 'w') as json_data:
         json.dump(data, json_data, indent=2)
+
+def get_providers():
+    '''Returns a list of providers'''
+    data = get_setting('providers')
+    return data.keys()
+
+def get_runtime(runtime_name):
+    '''Returns an specific runtime'''
+    try:
+        data = get_setting('providers')[runtime_name]
+        return data
+    except KeyError, e:
+        return None
+
+def str_to_bool(text):
+    '''Converts a string into a bool'''
+    try:
+        text = text.lower()
+    except AttributeError:
+        pass
+
+    if text == 'true':
+        return True
+    elif text == 'false':
+        return False
+    else:
+        raise ValueError

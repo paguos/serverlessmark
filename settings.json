@@ -1,14 +1,14 @@
 {
   "concurrencyRepeat": 100, 
-  "forever": false, 
+  "forever": true, 
   "repeat": 1000, 
+  "maxConcurrency": 800, 
   "providers": {
     "snafu": {
-      "url": ""
+      "url": "http://snafu.com/api"
     }
   }, 
-  "maxConcurrency": 800, 
   "maxConcurrencyPerInitiator": 10, 
   "interval": 600000, 
-  "serviceName": "serverless-mark"
+  "serviceName": "serverlessmark"
 }
