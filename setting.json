@@ -1,0 +1,18 @@
+{
+    "forever": false,
+    "interval": 600000,
+  
+    "serviceName": "faas-mark",
+  
+    "repeat": 1000,
+  
+    "concurrencyRepeat": 100,
+    "maxConcurrency": 800,
+    "maxConcurrencyPerInitiator": 10,
+  
+    "providers": {
+      "snafu": {
+        "url": ""
+      }
+    }
+  }
