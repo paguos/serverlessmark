@@ -3,12 +3,12 @@
   "forever": true, 
   "repeat": 1000, 
   "maxConcurrency": 800, 
+  "maxConcurrencyPerInitiator": 10, 
   "providers": {
     "snafu": {
-      "url": "http://snafu.com/api"
+      "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
     }
   }, 
-  "maxConcurrencyPerInitiator": 10, 
   "interval": 600000, 
   "serviceName": "serverlessmark"
 }

@@ -37,7 +37,10 @@ def main(argv):
         sys.exit(2)
 
 def run(runtime_name):
-    pass
+    url = util.get_runtime(runtime_name)['url']
+    header = {'Content-Type': 'application/json'}
+    payload = '''{"event": "" }'''
+    util.run(url, payload, header)
 
 def config():
     '''Config settings for the serverlessmark'''
