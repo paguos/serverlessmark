@@ -8,6 +8,9 @@
     "azure": {
       "url": "http://localhost:7071/api/serverlessmark"
     }, 
+    "fn": {
+      "url": "http://localhost:8080/r/serverlessmark/fn"
+    }, 
     "snafu": {
       "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
     }
