@@ -7,7 +7,7 @@ import util
 def main(argv):
     '''Handles all the operations of the module'''
     print len(argv)
-    if len(argv) == 2 :
+    if len(argv) == 2:
 
         action_name = argv[0]
         runtime_name = ""
@@ -19,7 +19,7 @@ def main(argv):
             sys.exit(2)
 
         if action_name == 'run':
-            run(runtime_name) 
+            run(runtime_name)
         elif action_name == 'config':
             config_runtime(runtime_name)
         else:
@@ -37,15 +37,42 @@ def main(argv):
         sys.exit(2)
 
 def run(runtime_name):
-    start = util.get_time_in_microseconds()
-
+    '''Run command'''
     url = util.get_runtime(runtime_name)['url']
     header = {'Content-Type': 'application/json'}
     payload = '''{"event": "" }'''
 
-    util.run(url, payload, header)
+    single_execution(url, header, payload)
+    concurrency_execution(url, header, payload)
+
+def single_execution(url, header, payload):
+    '''Executes a function once'''
+    start = util.get_time_in_microseconds()
+    util.call(url, payload, header)
     end = util.get_time_in_microseconds()
     print str(end - start)
+
+def concurrency_execution(url, header, payload):
+    '''Executes the function multiple times with 10 different threads '''
+    max_concurrency = int(util.get_setting('maxConcurrency'))
+    max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
+    concurrency_repeat = int(util.get_setting('concurrencyRepeat'))
+
+    threads_numb = max_concurrency / max_concurrency_per_initiator
+
+    print max_concurrency
+    print max_concurrency_per_initiator
+    print concurrency_repeat
+    print threads_numb
+
+    while max_concurrency > 0:
+        util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+        print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
+        max_concurrency = max_concurrency - 50
+        threads_numb = max_concurrency / max_concurrency_per_initiator
+
+    #util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+        
 
 def config():
     '''Config settings for the serverlessmark'''

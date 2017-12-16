@@ -1,8 +1,8 @@
 {
   "concurrencyRepeat": 100, 
-  "forever": true, 
+  "forever": false, 
   "repeat": 1000, 
-  "maxConcurrency": 800, 
+  "maxConcurrency": 100, 
   "maxConcurrencyPerInitiator": 10, 
   "providers": {
     "azure": {

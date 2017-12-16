@@ -3,7 +3,20 @@ import time
 import datetime
 import csv
 import json
+import threading
 import requests
+
+class ExecutionThread(threading.Thread):
+    '''A thread to execute multiple calls to an HTTP-Post method'''
+    def __init__(self, url, data, headers, repeat):
+        threading.Thread.__init__(self)
+        self.url = url
+        self.data = data
+        self.headers = headers
+        self.repeat = repeat
+
+    def run(self):
+        call(self.url, self.data, self.headers, self.repeat)
 
 def get_time_in_microseconds():
     '''Returns the time in Microseconds'''
@@ -15,14 +28,24 @@ def get_date_and_time():
     date = date.replace(":", "-").replace(" ", "-")
     return date.split(".")[0]
 
-def run(url, data, headers, repeat=1):
+def call(url, data, headers, repeat=1):
     """Calls an HTTP-Post method."""
     rem = repeat
     while rem > 0:
-        print "Execution #" + str(repeat - rem + 1)
         req = requests.post(url, data, headers)
-        print req.text
         rem = rem - 1
+
+def execute_threads(url, data, headers, repeat=1, threads=1):
+    '''Creates threads to call an HTTP-post method multiple times'''
+    rem_threads = threads
+    thread_count = 1
+    print "Executing %i  threads with %i repetitions" % (threads, repeat) 
+    while rem_threads > 0:
+        execution_thread = ExecutionThread(url, data, headers, repeat)
+        execution_thread.start()
+        #execution_thread.join()
+        rem_threads = rem_threads - 1
+        thread_count = thread_count + 1
 
 def log(message):
     '''Logs a message into a file with the current date'''
