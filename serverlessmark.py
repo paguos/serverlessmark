@@ -66,13 +66,12 @@ def concurrency_execution(url, header, payload):
     print threads_numb
 
     while max_concurrency > 0:
-        util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
+        util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+
         max_concurrency = max_concurrency - 50
         threads_numb = max_concurrency / max_concurrency_per_initiator
-
-    #util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
-        
+        util.sleep(int(util.get_setting('sleep')))
 
 def config():
     '''Config settings for the serverlessmark'''

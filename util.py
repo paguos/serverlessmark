@@ -39,13 +39,24 @@ def execute_threads(url, data, headers, repeat=1, threads=1):
     '''Creates threads to call an HTTP-post method multiple times'''
     rem_threads = threads
     thread_count = 1
-    print "Executing %i  threads with %i repetitions" % (threads, repeat) 
+    threads_list = []
+    #print "Executing %i  threads with %i repetitions" % (threads, repeat)
+
     while rem_threads > 0:
         execution_thread = ExecutionThread(url, data, headers, repeat)
         execution_thread.start()
-        #execution_thread.join()
+        threads_list.append(execution_thread)
         rem_threads = rem_threads - 1
         thread_count = thread_count + 1
+
+    for single_thread in threads_list:
+        single_thread.join()
+
+def sleep(seconds):
+    '''Sleeps the benchmark for an specific time'''
+    print 'Sleeping...',
+    time.sleep(seconds)
+    print ' %i secs' % seconds
 
 def log(message):
     '''Logs a message into a file with the current date'''
