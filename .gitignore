@@ -102,3 +102,4 @@ ENV/
 .DS_Store
 runtimes/.DS_Store
 runtimes/fn/.DS_Store
+runtimes/snafu/snafu.csv

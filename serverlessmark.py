@@ -6,7 +6,7 @@ import util
 
 def main(argv):
     '''Handles all the operations of the module'''
-    print len(argv)
+
     if len(argv) == 2:
 
         action_name = argv[0]
@@ -47,30 +47,35 @@ def run(runtime_name):
 
 def single_execution(url, header, payload):
     '''Executes a function once'''
-    start = util.get_time_in_microseconds()
-    util.call(url, payload, header)
-    end = util.get_time_in_microseconds()
-    print str(end - start)
+    print 'Running simple benchmark...'
+    max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
+    latency = util.call(url, payload, header, max_concurrency_per_initiator)
+    latency = util.microseconds_to_seconds(latency)
+    print "Latency: %f secs\n" % latency
 
 def concurrency_execution(url, header, payload):
     '''Executes the function multiple times with 10 different threads '''
     max_concurrency = int(util.get_setting('maxConcurrency'))
     max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
-    concurrency_repeat = int(util.get_setting('concurrencyRepeat'))
+    #concurrency_repeat = int(util.get_setting('concurrencyRepeat'))
 
     threads_numb = max_concurrency / max_concurrency_per_initiator
 
-    print max_concurrency
-    print max_concurrency_per_initiator
-    print concurrency_repeat
-    print threads_numb
+    print 'Running concurrency benchmark...'
+    print 'Max Concurrency: %i' % max_concurrency
+    print 'Max Concurrency Per Initiator: %i' % max_concurrency_per_initiator
+    #print threads_numb
 
     while max_concurrency > 0:
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
-        util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+        latencies = util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+        latency = reduce(lambda x, y: x+y, latencies)
+        latency = util.microseconds_to_seconds(latency)
 
         max_concurrency = max_concurrency - 50
         threads_numb = max_concurrency / max_concurrency_per_initiator
+
+        print "Latency: %f secs\n" % latency
         util.sleep(int(util.get_setting('sleep')))
 
 def config():
