@@ -68,7 +68,7 @@ def concurrency_execution(url, header, payload):
 
     while max_concurrency > 0:
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
-        latencies = util.execute_threads(url, header, payload, max_concurrency_per_initiator, threads_numb)
+        latencies = util.execute_threads(url, payload, header, max_concurrency_per_initiator, threads_numb)
         latency = reduce(lambda x, y: x+y, latencies)
         latency = util.microseconds_to_seconds(latency)
 
@@ -82,7 +82,7 @@ def config():
     '''Config settings for the serverlessmark'''
     settings_keys = util.get_settings()
     settings_keys.remove('providers')
-    
+
     print "### Config ServerlessMark ###\n"
 
     for sett_key in settings_keys:
