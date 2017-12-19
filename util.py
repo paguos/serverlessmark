@@ -79,16 +79,25 @@ def sleep(seconds):
     time.sleep(seconds)
     print ' %i secs' % seconds
 
-def log(message):
-    '''Logs a message into a file with the current date'''
-    file_name = get_date_and_time() + '.serverless-mark.csv'
-
+def init_log_file(runtime_name):
+    '''Initialize the file for logs'''
+    file_name = '%s.%s.serverless-mark.csv' % (get_date_and_time(), runtime_name)
     with open(file_name, 'w') as csvfile:
-        fieldnames = ['Time', 'Message']
+        fieldnames = ['Concurrency', 'Latency']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
-        writer.writerow({'Time': str(datetime.datetime.now()), 'Message': message})
+
+    return file_name
+
+def log(file_name, data):
+    '''Logs a message into a file with the current date'''
+
+    with open(file_name, 'a') as csvfile:
+        fieldnames = ['Concurrency', 'Latency']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writerow({'Concurrency': data[0], 'Latency': data[1]})
 
 def get_settings():
     '''Returns a list of the names of all the settings'''

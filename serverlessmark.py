@@ -41,19 +41,22 @@ def run(runtime_name):
     url = util.get_runtime(runtime_name)['url']
     header = {'Content-Type': 'application/json'}
     payload = '''{"event": "" }'''
+    file_name = util.init_log_file(runtime_name)
+    single_execution(url, header, payload, file_name)
+    concurrency_execution(url, header, payload, file_name)
 
-    single_execution(url, header, payload)
-    concurrency_execution(url, header, payload)
-
-def single_execution(url, header, payload):
+def single_execution(url, header, payload, log_file):
     '''Executes a function once'''
     print 'Running simple benchmark...'
     max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
+
     latency = util.call(url, payload, header, max_concurrency_per_initiator)
+    util.log(log_file, ['Single Benchmark', latency])
     latency = util.microseconds_to_seconds(latency)
+
     print "Latency: %f secs\n" % latency
 
-def concurrency_execution(url, header, payload):
+def concurrency_execution(url, header, payload, log_file):
     '''Executes the function multiple times with 10 different threads '''
     max_concurrency = int(util.get_setting('maxConcurrency'))
     max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
@@ -70,6 +73,7 @@ def concurrency_execution(url, header, payload):
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
         latencies = util.execute_threads(url, payload, header, max_concurrency_per_initiator, threads_numb)
         latency = reduce(lambda x, y: x+y, latencies)
+        util.log(log_file, [max_concurrency, latency])
         latency = util.microseconds_to_seconds(latency)
 
         max_concurrency = max_concurrency - 50
