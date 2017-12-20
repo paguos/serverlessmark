@@ -14,14 +14,14 @@ class ExecutionThread(threading.Thread):
         self.data = data
         self.headers = headers
         self.repeat = repeat
-        self.latencies = 0
+        self.data = []
 
     def run(self):
-        self.latencies = call(self.url, self.data, self.headers, self.repeat)
+        self.data = call(self.url, self.data, self.headers, self.repeat)
 
     def join(self):
         threading.Thread.join(self)
-        return self.latencies
+        return self.data
 
 def get_time_in_microseconds():
     '''Returns the time in Microseconds'''
@@ -40,24 +40,39 @@ def get_date_and_time():
 def call(url, data, headers, repeat=1):
     """Calls an HTTP-Post method."""
     rem = repeat
+    successes = 0
+    retries = 0
+
     latencies = []
+    retries_latencies = []
 
     while rem > 0:
         start = get_time_in_microseconds()
         req = requests.post(url, data, headers)
         end = get_time_in_microseconds()
-        #print req.text
-        latencies.append(end-start)
+
+        if req.status_code == 200:
+            successes = successes + 1
+            latencies.append(end-start)
+        if req.status_code == 503:
+            retries = retries + 1
+            rem = rem + 1
+            retries_latencies.append(end-start)
+        
         rem = rem - 1
 
-    return reduce(lambda x, y: x+y, latencies)
+    return [latencies, retries_latencies, successes, retries]
 
 def execute_threads(url, data, headers, repeat=1, threads=1):
     '''Creates threads to call an HTTP-post method multiple times'''
     rem_threads = threads
     thread_count = 1
     threads_list = []
-    latencies = []
+    total_latencies = []
+    total_retry_latencies = []
+    successes = 0
+    retries = 0
+
     #print "Executing %i  threads with %i repetitions" % (threads, repeat)
 
     while rem_threads > 0:
@@ -68,36 +83,48 @@ def execute_threads(url, data, headers, repeat=1, threads=1):
         thread_count = thread_count + 1
 
     for single_thread in threads_list:
-        latency = single_thread.join()
-        latencies.append(latency)
+        data = single_thread.join()
 
-    return latencies
+        latencies = data[0]
+        retries_latencies = data[1]
+        successes = successes + data[2]
+        retries = retries + data[3]
+
+        total_latencies.extend(latencies)
+        total_retry_latencies.extend(retries_latencies)
+
+    return [total_latencies, total_retry_latencies, successes, retries]
 
 def sleep(seconds):
     '''Sleeps the benchmark for an specific time'''
-    print 'Sleeping...',
+    print 'Sleeping...%i secs\n' % seconds
     time.sleep(seconds)
-    print ' %i secs' % seconds
 
-def init_log_file(runtime_name):
-    '''Initialize the file for logs'''
-    file_name = '%s.%s.serverless-mark.csv' % (get_date_and_time(), runtime_name)
+def init_log_file(runtime_name, log_name, header):
+    '''Initialize a log file'''
+    file_name = 'runtimes/%s/%s.%s.csv' % (runtime_name, get_date_and_time(), log_name)
     with open(file_name, 'w') as csvfile:
-        fieldnames = ['Concurrency', 'Latency']
+        fieldnames = header
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
 
     return file_name
 
-def log(file_name, data):
-    '''Logs a message into a file with the current date'''
+def log(log_file, header, data):
+    '''Logs into a file'''
 
-    with open(file_name, 'a') as csvfile:
-        fieldnames = ['Concurrency', 'Latency']
+    with open(log_file, 'a') as csvfile:
+        fieldnames = header
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        row = {}
+        count = 0
 
-        writer.writerow({'Concurrency': data[0], 'Latency': data[1]})
+        for item in header:
+            row[item] = data[count]
+            count = count + 1
+
+        writer.writerow(row)
 
 def get_settings():
     '''Returns a list of the names of all the settings'''

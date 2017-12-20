@@ -41,45 +41,68 @@ def run(runtime_name):
     url = util.get_runtime(runtime_name)['url']
     header = {'Content-Type': 'application/json'}
     payload = '''{"event": "" }'''
-    file_name = util.init_log_file(runtime_name)
-    single_execution(url, header, payload, file_name)
-    concurrency_execution(url, header, payload, file_name)
+
+    simple_log_file = util.init_log_file(runtime_name, 'simple', ['', 'Latency'])
+    concurrency_log_file = util.init_log_file(runtime_name, 'concurrency', ['Concurrency', 'Latency', 'Retries'])
+
+    single_execution(url, header, payload, simple_log_file)
+    concurrency_execution(url, header, payload, concurrency_log_file)
 
 def single_execution(url, header, payload, log_file):
     '''Executes a function once'''
     print 'Running simple benchmark...'
     max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
 
-    latency = util.call(url, payload, header, max_concurrency_per_initiator)
-    util.log(log_file, ['Single Benchmark', latency])
-    latency = util.microseconds_to_seconds(latency)
+    data = util.call(url, payload, header, max_concurrency_per_initiator)
+    latencies = data[0]
+    #retries = data[1]
 
-    print "Latency: %f secs\n" % latency
+    count = 1
+    for latency in latencies:
+        util.log(log_file, ['', 'Latency'], [count, latency])
+        count = count + 1
+
+    total_latency = util.microseconds_to_seconds(reduce(lambda x, y: x+y, latencies))
+
+    print "Latency: %f secs\n" % total_latency
 
 def concurrency_execution(url, header, payload, log_file):
     '''Executes the function multiple times with 10 different threads '''
     max_concurrency = int(util.get_setting('maxConcurrency'))
     max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
     #concurrency_repeat = int(util.get_setting('concurrencyRepeat'))
-
+    #reduce(lambda x, y: x+y, latencies)
     threads_numb = max_concurrency / max_concurrency_per_initiator
 
     print 'Running concurrency benchmark...'
     print 'Max Concurrency: %i' % max_concurrency
-    print 'Max Concurrency Per Initiator: %i' % max_concurrency_per_initiator
+    print 'Max Concurrency Per Initiator: %i\n' % max_concurrency_per_initiator
     #print threads_numb
 
     while max_concurrency > 0:
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
-        latencies = util.execute_threads(url, payload, header, max_concurrency_per_initiator, threads_numb)
+        call_data = util.execute_threads(url, payload, header, max_concurrency_per_initiator, threads_numb)
+        latencies = call_data[0]
         latency = reduce(lambda x, y: x+y, latencies)
-        util.log(log_file, [max_concurrency, latency])
+        retries = call_data[1]
+
+        try:
+            retry_latency = reduce(lambda x, y: x+y, retries)
+        except TypeError:
+            # In case there are no retries
+            retry_latency = 0
+        
+        util.log(log_file, ['Concurrency', 'Latency', 'Retries'],[max_concurrency, latency, retry_latency])
+        
         latency = util.microseconds_to_seconds(latency)
+        retry_latency = util.microseconds_to_seconds(retry_latency)
 
         max_concurrency = max_concurrency - 50
         threads_numb = max_concurrency / max_concurrency_per_initiator
 
-        print "Latency: %f secs\n" % latency
+        print "Latency: %.2f secs" % latency
+        print "Retries: %.2f secs" % retry_latency
+        print 'Successes: %i Retries: %i' % (call_data[2], call_data[3])
         util.sleep(int(util.get_setting('sleep')))
 
 def config():

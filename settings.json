@@ -1,6 +1,5 @@
 {
-  "concurrencyRepeat": 100, 
-  "forever": false, 
+  "concurrencyRepeat": 100,  
   "repeat": 1000, 
   "maxConcurrency": 400, 
   "maxConcurrencyPerInitiator": 10, 
