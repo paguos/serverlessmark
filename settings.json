@@ -1,19 +1,19 @@
 {
-  "concurrencyRepeat": 100,  
+  "concurrencyRepeat": 100, 
   "repeat": 1000, 
   "maxConcurrency": 400, 
   "maxConcurrencyPerInitiator": 10, 
-  "providers": {
-    "azure": {
-      "url": "http://localhost:7071/api/serverlessmark"
-    }, 
-    "fn": {
-      "url": "http://localhost:8080/r/serverlessmark/fn"
-    }, 
+  "runtimes": {
     "snafu": {
-      "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+      "sleep": {
+        "url": "http://localhost:10000/2015-03-31/functions/sleep.lambda_handler/invocations", 
+        "payload": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+      }, 
+      "empty": {
+        "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+      }
     }
   }, 
-  "sleep": 30, 
-  "serviceName": "serverlessmark"
+  "serviceName": "serverlessmark", 
+  "sleep": 30
 }

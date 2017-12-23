@@ -14,14 +14,14 @@ class ExecutionThread(threading.Thread):
         self.data = data
         self.headers = headers
         self.repeat = repeat
-        self.data = []
+        self.results = []
 
     def run(self):
-        self.data = call(self.url, self.data, self.headers, self.repeat)
+        self.results = call(self.url, self.data, self.headers, self.repeat)
 
     def join(self):
         threading.Thread.join(self)
-        return self.data
+        return self.results
 
 def get_time_in_microseconds():
     '''Returns the time in Microseconds'''
@@ -48,7 +48,7 @@ def call(url, data, headers, repeat=1):
 
     while rem > 0:
         start = get_time_in_microseconds()
-        req = requests.post(url, data, headers)
+        req = requests.post(url, json=data)
         end = get_time_in_microseconds()
 
         if req.status_code == 200:
@@ -147,18 +147,41 @@ def set_setting(setting_name, setting):
     with open('settings.json', 'w') as json_data:
         json.dump(data, json_data, indent=2)
 
-def get_providers():
-    '''Returns a list of providers'''
-    data = get_setting('providers')
+def get_runtime_names():
+    '''Returns a list of runtimes'''
+    data = get_setting('runtimes')
     return data.keys()
 
 def get_runtime(runtime_name):
     '''Returns an specific runtime'''
     try:
-        data = get_setting('providers')[runtime_name]
+        data = get_setting('runtimes')[runtime_name]
         return data
     except KeyError, e:
         return None
+
+def runtime_exists(runtime_name):
+    '''Returns true if a runtime already exists'''
+    runtime_names = get_runtime_names()
+    if runtime_name in runtime_names:
+        return True
+    else:
+        return False
+
+def add_runtime(runtime_name, empty_url, sleep_url, payload):
+    '''Adds a runtime'''
+    runtime_data = get_setting('runtimes')
+    runtime_data[runtime_name] = {'empty' : {'url': empty_url}, 'sleep' : {'url': sleep_url, "payload": payload }}
+    set_setting('runtimes', runtime_data)
+
+def delete_runtime(runtime_name):
+    '''Removes a runtime'''
+    if runtime_exists(runtime_name):
+        runtimes_data = get_setting('runtimes')
+        del runtimes_data[runtime_name]
+        set_setting('runtimes', runtimes_data)
+    else:
+        print 'Please enter the name of an existing runtime...'
 
 def str_to_bool(text):
     '''Converts a string into a bool'''
