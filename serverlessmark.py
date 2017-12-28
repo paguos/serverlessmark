@@ -58,9 +58,9 @@ def run(runtime_name):
 def single_execution(url, header, payload, log_file):
     '''Executes a function once'''
     print 'Running simple benchmark...'
-    max_concurrency_per_initiator = int(util.get_setting('maxConcurrencyPerInitiator'))
+    repeat = int(util.get_setting('repeat'))
 
-    data = util.call(url, payload, header, max_concurrency_per_initiator)
+    data = util.call(url, payload, header, repeat)
     latencies = data[0]
 
     count = 1
@@ -86,7 +86,8 @@ def concurrency_execution(runtime_name, log_file):
     print 'Max Concurrency: %i' % max_concurrency
     print 'Max Concurrency Per Initiator: %i\n' % max_concurrency_per_initiator
     
-    warm_up(runtime_name, 10, threads_numb)
+    warm_up_time = util.get_setting('warmUp')
+    warm_up(runtime_name, warm_up_time, threads_numb)
     
     while max_concurrency > 0:
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
