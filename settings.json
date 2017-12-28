@@ -1,26 +1,39 @@
 {
-  "concurrencyRepeat": 100,  
+  "concurrencyRepeat": 100, 
+  "repeat": 1000, 
   "maxConcurrency": 400, 
   "warmUp": 10, 
-  "maxConcurrencyPerInitiator": 10,
-  "repeat": 1000,
+  "maxConcurrencyPerInitiator": 10, 
   "runtimes": {
-    "fn": {
+    "azure-functions-ct": {
       "sleep": {
-        "url": "http://localhost:8080/r/serverlessmark/sleep", 
-        "payload": {"seconds": 0}
+        "url": "http://localhost:7071/api/sleep", 
+        "payload": ""
       }, 
       "empty": {
-        "url": "http://localhost:8080/r/serverlessmark/empty"
+        "url": "http://localhost:7071/api/empty"
       }
     }, 
     "snafu": {
       "sleep": {
         "url": "http://localhost:10000/2015-03-31/functions/sleep.lambda_handler/invocations", 
-        "payload": {"seconds": 0}
+        "payload": {
+          "seconds": 0
+        }
       }, 
       "empty": {
         "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+      }
+    }, 
+    "fn": {
+      "sleep": {
+        "url": "http://localhost:8080/r/serverlessmark/sleep", 
+        "payload": {
+          "seconds": 0
+        }
+      }, 
+      "empty": {
+        "url": "http://localhost:8080/r/serverlessmark/empty"
       }
     }
   }, 

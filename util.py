@@ -5,6 +5,7 @@ import csv
 import json
 import threading
 import requests
+from requests.exceptions import ConnectionError
 
 class ExecutionThread(threading.Thread):
     '''A thread to execute multiple calls to an HTTP-Post method'''
@@ -48,7 +49,12 @@ def call(url, data, headers, repeat=1):
 
     while rem > 0:
         start = get_time_in_microseconds()
-        req = requests.post(url, json=data)
+        try:
+            req = requests.post(url, json=data)
+        except ConnectionError:
+            pass
+        except UnboundLocalError:
+            pass
         end = get_time_in_microseconds()
 
         if req.status_code == 200:
