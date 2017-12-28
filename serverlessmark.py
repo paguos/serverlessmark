@@ -1,6 +1,7 @@
 '''A simple benchmark for serverless applications runtimes'''
 
 import sys
+import os
 import json
 import util
 
@@ -33,6 +34,8 @@ def main(argv):
             config()
         elif argv[0] == 'add':
             add()
+        elif argv[0] == 'clean':
+            clean()
         else:
             print 'USAGE: serverlessmark.py run -r <runtime>'
             sys.exit(2)
@@ -84,7 +87,7 @@ def concurrency_execution(runtime_name, log_file):
     print 'Max Concurrency Per Initiator: %i\n' % max_concurrency_per_initiator
     
     warm_up(runtime_name, 10, threads_numb)
-
+    
     while max_concurrency > 0:
         print 'Benchmarking concurrency: %i (%i initiators)' % (max_concurrency, threads_numb)
         call_data = util.execute_threads(url, payload, header, max_concurrency_per_initiator, threads_numb)
@@ -124,8 +127,22 @@ def add():
     print '%s added!' % name
 
 def remove(runtime_name):
+    '''Remove runtime'''
     print 'Removing %s...' % runtime_name
     util.delete_runtime(runtime_name)
+
+def clean():
+    '''Clean logs'''
+    dir_name = os.path.dirname(os.path.realpath(__file__))
+    runtimes = util.get_runtime_names()
+
+    for runtime in runtimes:
+        path_runtime = dir_name + '/runtimes/' + runtime + '/'
+        test = os.listdir(path_runtime)
+
+        for item in test:
+            if item.endswith(".csv"):
+                os.remove(os.path.join(path_runtime, item))
 
 def config():
     '''Config settings for the serverlessmark'''

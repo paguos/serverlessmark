@@ -1,19 +1,28 @@
 {
-  "concurrencyRepeat": 100, 
-  "repeat": 1000, 
+  "concurrencyRepeat": 100,  
   "maxConcurrency": 400, 
-  "maxConcurrencyPerInitiator": 10, 
+  "warmUp": 10, 
+  "maxConcurrencyPerInitiator": 10,
+  "repeat": 1000,
   "runtimes": {
+    "fn": {
+      "sleep": {
+        "url": "http://localhost:8080/r/serverlessmark/sleep", 
+        "payload": {"seconds": 0}
+      }, 
+      "empty": {
+        "url": "http://localhost:8080/r/serverlessmark/empty"
+      }
+    }, 
     "snafu": {
       "sleep": {
         "url": "http://localhost:10000/2015-03-31/functions/sleep.lambda_handler/invocations", 
-        "payload": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+        "payload": {"seconds": 0}
       }, 
       "empty": {
         "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
       }
     }
   }, 
-  "serviceName": "serverlessmark", 
-  "sleep": 30
+  "sleep": 20
 }
