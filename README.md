@@ -46,13 +46,30 @@ Benchmark behavior is control by the file *settings.json* which has the followin
 
 The deployment method of the two functions varies between runtimes.
 
-## Fn Project
+### Azure Functions Core Tools
+```sh
+cd runtimes/azure-functions-ct
+func host start
+```
+
+### Fn Project
 
 ```sh
 cd runtimes/fn/empty
 fn deploy --app serverlessmark
 cd ../sleep
 fn deploy --app serverlessmark
+```
+
+### OpenFaaS
+
+```sh
+cd runtimes/openfaas/empty
+faas-cli build -f ./empty.yml
+faas-cli deploy -f ./empty.yml
+cd ../sleep
+faas-cli build -f ./sleep.yml
+faas-cli deploy -f ./sleep.yml
 ```
 
 ### Snafu
