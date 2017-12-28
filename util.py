@@ -48,25 +48,26 @@ def call(url, data, headers, repeat=1):
     retries_latencies = []
 
     while rem > 0:
-        start = get_time_in_microseconds()
+        
         try:
+            start = get_time_in_microseconds()
             req = requests.post(url, json=data)
+            end = get_time_in_microseconds()
+
+            if req.status_code == 200:
+                successes = successes + 1
+                latencies.append(end-start)
+            if req.status_code == 503:
+                retries = retries + 1
+                rem = rem + 1
+                retries_latencies.append(end-start)
+        
         except ConnectionError:
             pass
         except UnboundLocalError:
             pass
-        end = get_time_in_microseconds()
 
-        if req.status_code == 200:
-            successes = successes + 1
-            latencies.append(end-start)
-        if req.status_code == 503:
-            retries = retries + 1
-            rem = rem + 1
-            retries_latencies.append(end-start)
-        
         rem = rem - 1
-
     return [latencies, retries_latencies, successes, retries]
 
 def execute_threads(url, data, headers, repeat=1, threads=1):

@@ -5,6 +5,26 @@
   "warmUp": 10, 
   "maxConcurrencyPerInitiator": 10, 
   "runtimes": {
+    "fn": {
+      "sleep": {
+        "url": "http://localhost:8080/r/serverlessmark/sleep", 
+        "payload": {
+          "seconds": 0
+        }
+      }, 
+      "empty": {
+        "url": "http://localhost:8080/r/serverlessmark/empty"
+      }
+    }, 
+    "openfaas": {
+      "sleep": {
+        "url": "http://localhost:8080/function/sleep", 
+        "payload": ""
+      }, 
+      "empty": {
+        "url": "http://localhost:8080/function/empty"
+      }
+    }, 
     "azure-functions-ct": {
       "sleep": {
         "url": "http://localhost:7071/api/sleep", 
@@ -23,17 +43,6 @@
       }, 
       "empty": {
         "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
-      }
-    }, 
-    "fn": {
-      "sleep": {
-        "url": "http://localhost:8080/r/serverlessmark/sleep", 
-        "payload": {
-          "seconds": 0
-        }
-      }, 
-      "empty": {
-        "url": "http://localhost:8080/r/serverlessmark/empty"
       }
     }
   }, 
