@@ -104,3 +104,5 @@ runtimes/.DS_Store
 runtimes/fn/.DS_Store
 runtimes/snafu/snafu.csv
 *.csv
+runtimes/snafu/data/fn.db
+runtimes/snafu/data/fn.mq
