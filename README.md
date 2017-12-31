@@ -56,9 +56,16 @@ func host start
 
 ```sh
 cd runtimes/fn/empty
-fn deploy --app serverlessmark
+fn deploy --app serverlessmark --local
 cd ../sleep
-fn deploy --app serverlessmark
+fn deploy --app serverlessmark --local
+```
+
+### Kubeless
+```sh
+cd runtimes/kubeless/
+kubeless function deploy empty --runtime python2.7 --from-file empty.py --handler empty.foobar --trigger-http
+kubeless function deploy sleep --runtime python2.7 --from-file sleep.py --handler sleep.foobar --trigger-http
 ```
 
 ### OpenFaaS
