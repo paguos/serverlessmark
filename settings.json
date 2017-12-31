@@ -5,15 +5,13 @@
   "warmUp": 10, 
   "maxConcurrencyPerInitiator": 10, 
   "runtimes": {
-    "fn": {
+    "kubeless": {
       "sleep": {
-        "url": "http://localhost:8080/r/serverlessmark/sleep", 
-        "payload": {
-          "seconds": 0
-        }
+        "url": "http://127.0.0.1:8080/api/v1/proxy/namespaces/default/services/sleep:function-port/", 
+        "payload": ""
       }, 
       "empty": {
-        "url": "http://localhost:8080/r/serverlessmark/empty"
+        "url": "http://127.0.0.1:8080/api/v1/proxy/namespaces/default/services/empty:function-port/"
       }
     }, 
     "openfaas": {
@@ -32,6 +30,17 @@
       }, 
       "empty": {
         "url": "http://localhost:7071/api/empty"
+      }
+    }, 
+    "fn": {
+      "sleep": {
+        "url": "http://localhost:8080/r/serverlessmark/sleep", 
+        "payload": {
+          "seconds": 0
+        }
+      }, 
+      "empty": {
+        "url": "http://localhost:8080/r/serverlessmark/empty"
       }
     }, 
     "snafu": {
