@@ -46,6 +46,15 @@ Benchmark behavior is control by the file *settings.json* which has the followin
 
 The deployment method of the two functions varies between runtimes.
 
+### Apache OpenWhisk
+```sh
+cd runtimes/openwhisk/
+wsk action create empty empty.py  --web true -i
+wsk api create /serverlessmark /empty post empty --response-type json -i
+wsk action create sleep sleep.py  --web true -i
+wsk api create /serverlessmark /sleep post sleep --response-type json -i
+```
+
 ### Azure Functions Core Tools
 ```sh
 cd runtimes/azure-functions-ct
