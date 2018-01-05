@@ -57,7 +57,7 @@ def call(url, data, headers, repeat=1):
             if req.status_code == 200:
                 successes = successes + 1
                 latencies.append(end-start)
-            if req.status_code == 503:
+            if req.status_code == 503 or req.status_code == 429:
                 retries = retries + 1
                 rem = rem + 1
                 retries_latencies.append(end-start)

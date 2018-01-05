@@ -55,6 +55,8 @@ def run(runtime_name):
     single_execution(empty_url, header, empty_payload, simple_log_file)
     concurrency_execution(runtime_name, concurrency_log_file)
 
+    print 'Done: ' + util.get_date_and_time()
+
 def single_execution(url, header, payload, log_file):
     '''Executes a function once'''
     print 'Running simple benchmark...'
@@ -75,7 +77,7 @@ def single_execution(url, header, payload, log_file):
 def concurrency_execution(runtime_name, log_file):
     '''Executes the function multiple times with 10 different threads '''
     url = util.get_runtime(runtime_name)['sleep']['url']
-    payload = {"seconds": 0 }
+    payload = {'seconds': 0 }
     header = {'Content-Type': 'application/json'}
 
     max_concurrency = int(util.get_setting('maxConcurrency'))
