@@ -14,6 +14,26 @@
         "url": "http://127.0.0.1:8080/api/v1/proxy/namespaces/default/services/empty:function-port/"
       }
     }, 
+    "snafu": {
+      "sleep": {
+        "url": "http://localhost:10000/2015-03-31/functions/sleep.lambda_handler/invocations", 
+        "payload": {
+          "seconds": 0
+        }
+      }, 
+      "empty": {
+        "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
+      }
+    }, 
+    "openwhisk": {
+      "sleep": {
+        "url": "http://172.17.0.1:9001/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/serverlessmark/sleep", 
+        "payload": ""
+      }, 
+      "empty": {
+        "url": "http://172.17.0.1:9001/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/serverlessmark/empty"
+      }
+    }, 
     "openfaas": {
       "sleep": {
         "url": "http://localhost:8080/function/sleep", 
@@ -41,17 +61,6 @@
       }, 
       "empty": {
         "url": "http://localhost:8080/r/serverlessmark/empty"
-      }
-    }, 
-    "snafu": {
-      "sleep": {
-        "url": "http://localhost:10000/2015-03-31/functions/sleep.lambda_handler/invocations", 
-        "payload": {
-          "seconds": 0
-        }
-      }, 
-      "empty": {
-        "url": "http://localhost:10000/2015-03-31/functions/empty.lambda_handler/invocations"
       }
     }
   }, 
