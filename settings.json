@@ -43,6 +43,15 @@
         "url": "http://localhost:8080/function/empty"
       }
     }, 
+    "nuclio": {
+      "sleep": {
+        "url": "http://localhost:34653", 
+        "payload": ""
+      }, 
+      "empty": {
+        "url": "http://localhost:43323"
+      }
+    }, 
     "azure-functions-ct": {
       "sleep": {
         "url": "http://localhost:7071/api/sleep", 
