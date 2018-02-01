@@ -1,7 +1,10 @@
-name: serverlessmark/fn-fdk-python-sleep:0.0.1
+name: serverlessmark/fn-fdk-python-sleep
 version: 0.0.1
 runtime: docker
 type: sync
 memory: 256
 format: json
 path: /fn-fdk-python-sleep
+runtime: python3.6
+entrypoint: python3 func.py
+build_image: python:3.6
