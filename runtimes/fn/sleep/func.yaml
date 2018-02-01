@@ -1,3 +1,0 @@
-version: 0.0.15
-runtime: python
-entrypoint: python2 func.py
